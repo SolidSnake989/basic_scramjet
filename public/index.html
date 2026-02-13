@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+		/>
+		<title>Percy Julian Encyclopidia</title>
+
+		<link rel="shortcut icon" href="favicon.ico" />
+
+		<script src="/scram/scramjet.all.js"></script>
+		<script src="/baremux/index.js"></script>
+
+		<link rel="stylesheet" href="index.css" />
+		<script src="register-sw.js" defer></script>
+		<script src="search.js" defer></script>
+		<script src="index.js" defer></script>
+	</head>
+
+	<body>
+		<div title="Percy Julian Encyclopedia" class="flex-center logo-wrapper header-center">
+			<h1>Percy Julian Encyclopedia</h1>
+		</div>
+		<div class="flex-center desc left-margin">
+			<p>
+				Search our encyclopedia for anything you need!
+			</p>
+		</div>
+
+		<form id="sj-form" class="flex-center">
+			<input
+				id="sj-search-engine"
+				value="https://www.google.com/search?q=%s"
+				type="hidden"
+			/>
+			<input id="sj-address" type="text" placeholder="Search the encyclopedia" />
+		</form>
+		<div class="desc left-margin">
+			<p id="sj-error"></p>
+			<pre id="sj-error-code"></pre>
+		</div>
+		<div class="flex-center" style="margin-top: 20px;">
+			<button id="cookie-clicker-btn" onclick="openCookieClicker()">Cookie Clicker</button>
+		</div>
+
+		<script>
+			function openCookieClicker() {
+				var win = window.open("about:blank", "_blank");
+				var iframe = win.document.createElement("iframe");
+				iframe.style.width = "100%";
+				iframe.style.height = "100%";
+				iframe.style.border = "none";
+				iframe.style.position = "fixed";
+				iframe.style.top = "0";
+				iframe.style.left = "0";
+				iframe.src = location.origin + "/cookieclicker/index.html";
+				win.document.body.style.margin = "0";
+				win.document.body.appendChild(iframe);
+			}
+		</script>
+
+		<footer>
+			<div>
+				<span>Powered by Scramjet</span>
+			</div>
+		</footer>
+	</body>
+</html>

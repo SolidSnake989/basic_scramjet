@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+		/>
+		<title>Percy Julian Encyclopedia - Login</title>
+		<link rel="shortcut icon" href="favicon.ico" />
+		<link rel="stylesheet" href="index.css" />
+	</head>
+
+	<body>
+		<div class="flex-center logo-wrapper header-center">
+			<h1>Percy Julian Encyclopedia</h1>
+		</div>
+		<div class="flex-center desc left-margin">
+			<p>Please log in to access the encyclopedia.</p>
+		</div>
+
+		<form id="login-form" class="flex-center">
+			<input
+				id="login-password"
+				type="password"
+				placeholder="Enter password"
+				autocomplete="current-password"
+			/>
+		</form>
+		<div class="flex-center desc left-margin">
+			<p id="login-error"></p>
+		</div>
+
+		<div id="logged-in" style="display: none;">
+			<div class="flex-center desc left-margin">
+				<p style="color: rgba(255,255,255,0.7);">You are logged in. You may close this tab.</p>
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				<span>Powered by Scramjet</span>
+			</div>
+		</footer>
+
+		<script>
+			const form = document.getElementById("login-form");
+			const password = document.getElementById("login-password");
+			const error = document.getElementById("login-error");
+			const loggedIn = document.getElementById("logged-in");
+
+			form.addEventListener("submit", async (e) => {
+				e.preventDefault();
+				error.textContent = "";
+
+				const res = await fetch("/api/login", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ password: password.value }),
+				});
+
+				if (res.ok) {
+					// Open the real site in an about:blank tab
+					var win = window.open("about:blank", "_blank");
+					var iframe = win.document.createElement("iframe");
+					iframe.style.width = "100%";
+					iframe.style.height = "100%";
+					iframe.style.border = "none";
+					iframe.style.position = "fixed";
+					iframe.style.top = "0";
+					iframe.style.left = "0";
+					iframe.src = location.origin + "/";
+					win.document.body.style.margin = "0";
+					win.document.body.appendChild(iframe);
+
+					// Hide form, show logged-in message
+					form.style.display = "none";
+					loggedIn.style.display = "block";
+				} else {
+					error.textContent = "Incorrect password.";
+					password.value = "";
+					password.focus();
+				}
+			});
+		</script>
+	</body>
+</html>

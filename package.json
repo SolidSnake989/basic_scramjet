@@ -1,0 +1,23 @@
+{
+	"name": "basic-scramjet",
+	"version": "1.0.0",
+	"description": "Basic Scramjet proxy setup for geist.contrarywise.org",
+	"type": "module",
+	"engines": {
+		"node": ">=16.0.0"
+	},
+	"scripts": {
+		"start": "node src/index.js"
+	},
+	"dependencies": {
+		"@fastify/cookie": "^11.0.2",
+		"@fastify/session": "^11.1.1",
+		"@fastify/static": "^8.2.0",
+		"@mercuryworkshop/bare-mux": "^2.1.7",
+		"@mercuryworkshop/libcurl-transport": "^1.5.2",
+		"@mercuryworkshop/scramjet": "https://github.com/MercuryWorkshop/scramjet/releases/download/latest/mercuryworkshop-scramjet-2.0.0-alpha.tgz",
+		"@mercuryworkshop/wisp-js": "^0.4.1",
+		"fastify": "^5.4.0",
+		"ws": "^8.18.3"
+	}
+}
