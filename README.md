@@ -6,5 +6,14 @@ https://github.com/MercuryWorkshop/scramjet-app and https://github.com/MercuryWo
 
 # Requirements 
 
-Ubuntu or some sort of linux subsystem (I used WSL), node 16x or above, curl and git (if not installed by default) 
+• Ubuntu or some sort of linux subsystem (I used WSL)
 
+• Node 16x or above
+
+• curl (if not installed by default) 
+
+• git (if not installed by default) 
+
+# Setup
+
+(WIP)
