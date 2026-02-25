@@ -42,11 +42,11 @@
 			<pre id="sj-error-code"></pre>
 		</div>
 		<div class="flex-center" style="margin-top: 20px;">
-			<button id="cookie-clicker-btn" onclick="openCookieClicker()">Cookie Clicker</button>
+			<button id="about-us-btn" onclick="OpenAboutUsPage()">About Us</button>
 		</div>
 
 		<script>
-			function openCookieClicker() {
+			function OpenAboutUsPage() {
 				var win = window.open("about:blank", "_blank");
 				var iframe = win.document.createElement("iframe");
 				iframe.style.width = "100%";
@@ -55,16 +55,12 @@
 				iframe.style.position = "fixed";
 				iframe.style.top = "0";
 				iframe.style.left = "0";
-				iframe.src = location.origin + "/cookieclicker/index.html";
+				iframe.src = location.origin + "/about_us/index.html";
 				win.document.body.style.margin = "0";
 				win.document.body.appendChild(iframe);
 			}
 		</script>
 
-		<footer>
-			<div>
-				<span>Powered by Scramjet</span>
-			</div>
-		</footer>
 	</body>
+	
 </html>

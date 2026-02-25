@@ -45,7 +45,7 @@ fastify.register(fastifySession, {
 	cookie: {
 		secure: false, // set to true behind HTTPS in production
 		httpOnly: true,
-		maxAge: 1000 * 60 * 60 * 24, // 24 hours
+		maxAge: 1000 * 60 * 60 * 5, // 24 hours
 	},
 });
 
