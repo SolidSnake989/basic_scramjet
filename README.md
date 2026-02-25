@@ -27,5 +27,7 @@ This will create a localhost of the site for testing
 # Changelog
 
 1.0.0 Launch
+
 1.0.1 Fixed cookie clicker
+
 2.0.0 Reworked login system, various changes to make the site more inconspicious
