@@ -22,6 +22,7 @@ https://github.com/MercuryWorkshop/scramjet-app and https://github.com/MercuryWo
 2. change example.config.js to config.js, replace placeholder names
 3. commit changes
 4. run `npm start`
+   
 This will create a localhost of the site for testing
 
 # Changelog
