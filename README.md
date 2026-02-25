@@ -8,6 +8,8 @@ https://github.com/MercuryWorkshop/scramjet-app and https://github.com/MercuryWo
 
 • Ubuntu or some sort of linux subsystem (I used WSL)
 
+• Visual Studio code or similar code editor (if you want to make changes)
+
 • Node 16x or above
 
 • curl (if not installed by default) 
