@@ -1,1 +1,4 @@
-export const SITE_PASSWORD = "changeme";
+export const USERS = {
+	alice: "changeme",
+	bob: "changeme",
+};

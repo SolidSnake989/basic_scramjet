@@ -11,7 +11,7 @@ import fastifySession from "@fastify/session";
 import { scramjetPath } from "@mercuryworkshop/scramjet/path";
 import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
-import { SITE_PASSWORD } from "../config.js";
+import { USERS } from "../config.js";
 
 const publicPath = fileURLToPath(new URL("../public/", import.meta.url));
 
@@ -61,9 +61,10 @@ fastify.addHook("preHandler", (req, reply, done) => {
 
 // --- Login route ---
 fastify.post("/api/login", async (req, reply) => {
-	const { password } = req.body || {};
-	if (password === SITE_PASSWORD) {
+	const { username, password } = req.body || {};
+	if (username && USERS[username] && USERS[username] === password) {
 		req.session.authenticated = true;
+		req.session.username = username;
 		return { success: true };
 	}
 	reply.code(401);

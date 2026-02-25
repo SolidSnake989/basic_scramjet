@@ -9,6 +9,56 @@
 		<title>Percy Julian Encyclopedia - Login</title>
 		<link rel="shortcut icon" href="favicon.ico" />
 		<link rel="stylesheet" href="index.css" />
+		<style>
+			#login-form {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 12px;
+				margin-top: 10px;
+			}
+
+			#login-form input {
+				background: none;
+				font-family: inherit;
+				font-size: 15px;
+				padding: 0 17px;
+				height: 48px;
+				width: 320px;
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				border-radius: 50px;
+				color: #fff;
+				outline: none;
+				transition: border-color 0.2s, border-radius 0.1s;
+			}
+
+			#login-form input:focus {
+				border-color: rgba(255, 255, 255, 0.5);
+				border-radius: 6px;
+			}
+
+			#login-form button {
+				font-family: inherit;
+				font-size: 15px;
+				padding: 0 28px;
+				height: 44px;
+				border: none;
+				border-radius: 50px;
+				background: rgba(255, 255, 255, 0.1);
+				color: #fff;
+				cursor: pointer;
+				transition: background 0.2s;
+				margin-top: 4px;
+			}
+
+			#login-form button:hover {
+				background: rgba(255, 255, 255, 0.2);
+			}
+
+			#login-error {
+				color: #ff6666 !important;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -19,13 +69,20 @@
 			<p>Please log in to access the encyclopedia.</p>
 		</div>
 
-		<form id="login-form" class="flex-center">
+		<form id="login-form">
+			<input
+				id="login-username"
+				type="text"
+				placeholder="Username"
+				autocomplete="username"
+			/>
 			<input
 				id="login-password"
 				type="password"
-				placeholder="Enter password"
+				placeholder="Password"
 				autocomplete="current-password"
 			/>
+			<button type="submit">Log In</button>
 		</form>
 		<div class="flex-center desc left-margin">
 			<p id="login-error"></p>
@@ -40,6 +97,7 @@
 
 		<script>
 			const form = document.getElementById("login-form");
+			const username = document.getElementById("login-username");
 			const password = document.getElementById("login-password");
 			const error = document.getElementById("login-error");
 			const loggedIn = document.getElementById("logged-in");
@@ -51,7 +109,7 @@
 				const res = await fetch("/api/login", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ password: password.value }),
+					body: JSON.stringify({ username: username.value, password: password.value }),
 				});
 
 				if (res.ok) {
@@ -72,9 +130,9 @@
 					form.style.display = "none";
 					loggedIn.style.display = "block";
 				} else {
-					error.textContent = "Incorrect password.";
+					error.textContent = "Incorrect username or password.";
 					password.value = "";
-					password.focus();
+					username.focus();
 				}
 			});
 		</script>
