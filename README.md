@@ -16,7 +16,7 @@ https://github.com/MercuryWorkshop/scramjet-app and https://github.com/MercuryWo
 
 • git (if not installed by default) 
 
-# Deployment
+# Localhost Deployment
 
 1. clone the repo or download as zip
 2. change example.config.js to config.js, replace placeholder names
