@@ -12,8 +12,6 @@ https://github.com/MercuryWorkshop/scramjet-app and https://github.com/MercuryWo
 
 • Node 16x or above
 
-• curl (if not installed by default) 
-
 • git (if not installed by default) 
 
 # Localhost Deployment
