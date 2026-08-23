@@ -1,3 +1,4 @@
 node_modules/
 config.js
 public/emulator/roms/*/*
+public/emulator/roms/manifest.json

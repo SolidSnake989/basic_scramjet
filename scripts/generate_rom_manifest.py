@@ -3,9 +3,10 @@
 
 Usage: generate_rom_manifest.py <roms_dir> <output_file>
 
-Existing entries in <output_file> are matched by "file" path and keep
-their hand-set "title"/"license" fields; only newly-seen ROMs get a
-title derived from their filename.
+Title is always derived from the filename: extension stripped, plus
+any "(...)" / "[...]" tags (region, revision, dump flags, etc). Existing
+entries in <output_file> are matched by "file" path and keep their
+hand-set "license" field, if any.
 """
 import json
 import re
@@ -62,7 +63,7 @@ def main():
             entry = {
                 "system": system,
                 "file": rel_file,
-                "title": prior["title"] if prior and prior.get("title") else derive_title(rom_path.name),
+                "title": derive_title(rom_path.name),
             }
             if prior and prior.get("license"):
                 entry["license"] = prior["license"]
