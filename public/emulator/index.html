@@ -1,0 +1,231 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+		/>
+		<title>Play Games</title>
+
+		<style>
+			body {
+				font-family: Arial, Helvetica, sans-serif;
+				margin: 0;
+				background: #111;
+				color: #fff;
+				min-height: 100vh;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				padding: 24px 16px 48px;
+				box-sizing: border-box;
+			}
+			h1 {
+				margin: 8px 0 24px;
+			}
+			h2 {
+				font-size: 1rem;
+				color: rgba(255, 255, 255, 0.7);
+				margin: 24px 0 8px;
+			}
+			section {
+				width: 100%;
+				max-width: 640px;
+			}
+			#game-list {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 8px;
+			}
+			#game-list p {
+				color: rgba(255, 255, 255, 0.5);
+			}
+			button,
+			select,
+			input[type="file"] {
+				font-family: inherit;
+				font-size: 0.95rem;
+				background: none;
+				color: #fff;
+				border: 1px solid rgba(255, 255, 255, 0.3);
+				border-radius: 6px;
+				padding: 8px 14px;
+				cursor: pointer;
+			}
+			button:hover {
+				border-color: rgba(255, 255, 255, 0.7);
+			}
+			.row {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 8px;
+				align-items: center;
+			}
+			#status {
+				min-height: 1.2em;
+				color: rgba(255, 255, 255, 0.6);
+				font-size: 0.9rem;
+				margin-top: 8px;
+				white-space: pre-wrap;
+			}
+			#canvas-wrapper {
+				margin-top: 24px;
+				width: 100%;
+				max-width: 800px;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			#game-canvas {
+				width: 100%;
+				max-width: 800px;
+				background: #000;
+				border: 1px solid rgba(255, 255, 255, 0.2);
+			}
+			#controls {
+				margin-top: 12px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1>Play Games</h1>
+
+		<section id="library-section">
+			<h2>Game Library</h2>
+			<div id="game-list">
+				<p>Loading&hellip;</p>
+			</div>
+		</section>
+
+		<section id="upload-section">
+			<h2>Or Upload Your Own ROM</h2>
+			<div class="row">
+				<select id="upload-system"></select>
+				<input id="upload-file" type="file" />
+				<button id="upload-launch-btn">Launch</button>
+			</div>
+		</section>
+
+		<div id="status"></div>
+
+		<div id="canvas-wrapper">
+			<canvas id="game-canvas"></canvas>
+			<div id="controls" class="row">
+				<button id="stop-btn">Stop</button>
+			</div>
+		</div>
+
+		<script type="module">
+			import { Nostalgist } from "/nostalgist/nostalgist.js";
+
+			// Maps a console/system id to its libretro core name and the
+			// vendored core files served from /emulator/cores/.
+			const SYSTEMS = {
+				nes: { label: "NES", core: "fceumm" },
+				snes: { label: "SNES", core: "snes9x" },
+				gb: { label: "Game Boy / Color", core: "mgba" },
+				gba: { label: "Game Boy Advance", core: "mgba" },
+				megadrive: { label: "Genesis / Mega Drive", core: "genesis_plus_gx" },
+			};
+
+			const statusEl = document.getElementById("status");
+			const canvas = document.getElementById("game-canvas");
+			const uploadSystemSelect = document.getElementById("upload-system");
+			const uploadFileInput = document.getElementById("upload-file");
+			const gameListEl = document.getElementById("game-list");
+
+			let current = null;
+
+			function setStatus(message) {
+				statusEl.textContent = message || "";
+			}
+
+			for (const [id, { label }] of Object.entries(SYSTEMS)) {
+				const option = document.createElement("option");
+				option.value = id;
+				option.textContent = label;
+				uploadSystemSelect.appendChild(option);
+			}
+
+			function coreFor(systemId) {
+				const system = SYSTEMS[systemId];
+				if (!system) throw new Error(`Unknown system: ${systemId}`);
+				const { core } = system;
+				return {
+					name: core,
+					js: new URL(`/emulator/cores/${core}_libretro.js`, location.origin).href,
+					wasm: new URL(`/emulator/cores/${core}_libretro.wasm`, location.origin).href,
+				};
+			}
+
+			async function launchGame(systemId, rom) {
+				setStatus("Loading…");
+				try {
+					if (current) {
+						await current.exit();
+						current = null;
+					}
+					current = await Nostalgist.launch({
+						element: canvas,
+						core: coreFor(systemId),
+						rom,
+					});
+					setStatus("");
+				} catch (err) {
+					console.error(err);
+					setStatus(`Failed to launch: ${err.message || err}`);
+				}
+			}
+
+			document.getElementById("stop-btn").addEventListener("click", async () => {
+				if (current) {
+					await current.exit();
+					current = null;
+					setStatus("Stopped.");
+				}
+			});
+
+			document.getElementById("upload-launch-btn").addEventListener("click", () => {
+				const file = uploadFileInput.files[0];
+				if (!file) {
+					setStatus("Choose a ROM file first.");
+					return;
+				}
+				launchGame(uploadSystemSelect.value, file);
+			});
+
+			async function loadLibrary() {
+				let manifest = [];
+				try {
+					const res = await fetch("/emulator/roms/manifest.json");
+					manifest = await res.json();
+				} catch (err) {
+					console.error("Failed to load ROM manifest", err);
+				}
+
+				gameListEl.innerHTML = "";
+				if (!manifest.length) {
+					const p = document.createElement("p");
+					p.textContent = "No server-hosted games yet — upload your own ROM below.";
+					gameListEl.appendChild(p);
+					return;
+				}
+
+				for (const game of manifest) {
+					const button = document.createElement("button");
+					button.textContent = game.title || game.file;
+					button.title = game.license ? `License: ${game.license}` : "";
+					button.addEventListener("click", () => {
+						const url = new URL(`/emulator/roms/${game.file}`, location.origin).href;
+						launchGame(game.system, url);
+					});
+					gameListEl.appendChild(button);
+				}
+			}
+
+			loadLibrary();
+		</script>
+	</body>
+</html>

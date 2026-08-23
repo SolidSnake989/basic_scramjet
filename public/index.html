@@ -43,6 +43,7 @@
 		</div>
 		<div class="flex-center" style="margin-top: 20px;">
 			<button id="about-us-btn" onclick="OpenAboutUsPage()">About Us</button>
+			<button id="games-btn" onclick="OpenGamesPage()">Play Games</button>
 		</div>
 
 		<script>
@@ -56,6 +57,20 @@
 				iframe.style.top = "0";
 				iframe.style.left = "0";
 				iframe.src = location.origin + "/about_us/index.html";
+				win.document.body.style.margin = "0";
+				win.document.body.appendChild(iframe);
+			}
+
+			function OpenGamesPage() {
+				var win = window.open("about:blank", "_blank");
+				var iframe = win.document.createElement("iframe");
+				iframe.style.width = "100%";
+				iframe.style.height = "100%";
+				iframe.style.border = "none";
+				iframe.style.position = "fixed";
+				iframe.style.top = "0";
+				iframe.style.left = "0";
+				iframe.src = location.origin + "/emulator/index.html";
 				win.document.body.style.margin = "0";
 				win.document.body.appendChild(iframe);
 			}

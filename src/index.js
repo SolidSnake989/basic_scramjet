@@ -94,6 +94,12 @@ fastify.register(fastifyStatic, {
 	decorateReply: false,
 });
 
+fastify.register(fastifyStatic, {
+	root: fileURLToPath(new URL("../node_modules/nostalgist/dist/", import.meta.url)),
+	prefix: "/nostalgist/",
+	decorateReply: false,
+});
+
 fastify.setNotFoundHandler((req, reply) => {
 	return reply.code(404).type("text/html").sendFile("404.html");
 });

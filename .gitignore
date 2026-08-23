@@ -1,2 +1,6 @@
 node_modules/
 config.js
+
+# ROM files are copyright-sensitive and are managed by hand on each
+# deployment; only roms/manifest.json (the game list) is tracked.
+public/emulator/roms/*/*
