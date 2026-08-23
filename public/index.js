@@ -34,9 +34,7 @@ scramjet.init();
 
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
 
-form.addEventListener("submit", async (event) => {
-	event.preventDefault();
-
+async function launchProxy(url) {
 	try {
 		await registerSW();
 	} catch (err) {
@@ -44,8 +42,6 @@ form.addEventListener("submit", async (event) => {
 		errorCode.textContent = err.toString();
 		throw err;
 	}
-
-	const url = search(address.value, searchEngine.value);
 
 	let wispUrl =
 		(location.protocol === "https:" ? "wss" : "ws") +
@@ -61,4 +57,29 @@ form.addEventListener("submit", async (event) => {
 	frame.frame.id = "sj-frame";
 	document.body.appendChild(frame.frame);
 	frame.go(url);
-});
+}
+
+// Check if opened with a URL to auto-proxy (from about:blank iframe)
+const params = new URLSearchParams(location.search);
+const autoUrl = params.get("q");
+
+if (autoUrl) {
+	launchProxy(autoUrl);
+} else {
+	form.addEventListener("submit", (event) => {
+		event.preventDefault();
+		const url = search(address.value, searchEngine.value);
+
+		var win = window.open("about:blank", "_blank");
+		var iframe = win.document.createElement("iframe");
+		iframe.style.width = "100%";
+		iframe.style.height = "100%";
+		iframe.style.border = "none";
+		iframe.style.position = "fixed";
+		iframe.style.top = "0";
+		iframe.style.left = "0";
+		iframe.src = location.origin + "/?q=" + encodeURIComponent(url);
+		win.document.body.style.margin = "0";
+		win.document.body.appendChild(iframe);
+	});
+}
