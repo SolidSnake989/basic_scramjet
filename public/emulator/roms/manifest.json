@@ -1,1 +1,50 @@
-[]
+[
+{
+    "system": "nes",
+    "file": "nes/Castlevania (USA) (Rev 1).nes",
+    "title": "Castlevania"
+  },
+
+{
+    "system": "nes",
+    "file": "nes/Metal Gear (USA).nes",
+    "title": "Metal Gear"
+  },
+
+{
+    "system": "nes",
+    "file": "nes/Metroid (USA).nes",
+    "title": "Metroid"
+  },
+
+{
+    "system": "nes",
+    "file": "nes/Super Mario Bros. 2 (USA) (Rev 1).nes",
+    "title": "Super Mario Bros. 2 (USA)"
+  },
+{
+    "system": "nes",
+    "file": "nes/Super Mario Bros 3 (USA) (Rev 1).nes",
+    "title": "Super Mario Bros. 3"
+  },
+{
+    "system": "snes",
+    "file": "snes/Castlevania - Dracula X (USA).sfc",
+    "title": "Castlevania - Dracula X"
+  },
+{
+    "system": "snes",
+    "file": "snes/Star Fox (U) (V1.2) [!].smc",
+    "title": "Star Fox"
+  },
+{
+    "system": "snes",
+    "file": "snes/Super Mario World (U) [!].smc",
+    "title": "Your Game"
+  },
+{
+    "system": "snes",
+    "file": "snes/Super Metroid (Japan, USA) (En,Ja).sfc",
+    "title": "Your Game"
+  }
+]
