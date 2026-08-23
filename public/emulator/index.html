@@ -72,19 +72,70 @@
 			#canvas-wrapper {
 				margin-top: 24px;
 				width: 100%;
-				max-width: 800px;
+				max-width: min(92vw, 1400px);
 				display: flex;
 				flex-direction: column;
 				align-items: center;
 			}
-			#game-canvas {
+			#game-canvas,
+			#canvas {
 				width: 100%;
-				max-width: 800px;
+				aspect-ratio: 4 / 3;
 				background: #000;
 				border: 1px solid rgba(255, 255, 255, 0.2);
 			}
+			/*
+			 * RetroArch's Emscripten build renames/re-targets the live canvas to
+			 * id="canvas" and sets an inline width/height style on it directly.
+			 * Inline styles beat any plain selector regardless of specificity, so
+			 * this is the one thing that can still override it.
+			 */
+			#canvas {
+				width: calc(min(92vw, 1400px) * var(--emu-scale, 1)) !important;
+				height: auto !important;
+				max-width: 100% !important;
+			}
+			#canvas:fullscreen {
+				width: auto !important;
+				height: 100% !important;
+				max-width: 100% !important;
+				max-height: 100% !important;
+				margin: auto;
+			}
+			#scale-label {
+				min-width: 3.5em;
+				text-align: center;
+				color: rgba(255, 255, 255, 0.7);
+				font-size: 0.9rem;
+			}
 			#controls {
 				margin-top: 12px;
+			}
+			#controls-help {
+				margin-top: 24px;
+				width: 100%;
+				max-width: min(92vw, 1400px);
+				background: rgba(255, 255, 255, 0.05);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				border-radius: 8px;
+				padding: 10px 16px;
+				font-size: 0.85rem;
+				box-sizing: border-box;
+			}
+			#controls-help ul {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				display: flex;
+				flex-wrap: wrap;
+				gap: 6px 20px;
+				justify-content: center;
+			}
+			#controls-help .key {
+				color: rgba(255, 255, 255, 0.5);
+			}
+			#controls-help .key::after {
+				content: ": ";
 			}
 		</style>
 	</head>
@@ -110,10 +161,26 @@
 
 		<div id="status"></div>
 
+		<div id="controls-help">
+			<ul>
+				<li><span class="key">D-Pad</span> Arrow Keys</li>
+				<li><span class="key">A</span> X</li>
+				<li><span class="key">B</span> Z</li>
+				<li><span class="key">X</span> S</li>
+				<li><span class="key">Y</span> A</li>
+				<li><span class="key">Start</span> Enter</li>
+				<li><span class="key">Select</span> Shift</li>
+			</ul>
+		</div>
+
 		<div id="canvas-wrapper">
 			<canvas id="game-canvas"></canvas>
 			<div id="controls" class="row">
 				<button id="stop-btn">Stop</button>
+				<button id="scale-down-btn">−</button>
+				<span id="scale-label">100%</span>
+				<button id="scale-up-btn">+</button>
+				<button id="fullscreen-btn">Fullscreen</button>
 			</div>
 		</div>
 
@@ -171,6 +238,9 @@
 						element: canvas,
 						core: coreFor(systemId),
 						rom,
+						retroarchConfig: {
+							video_scale: 5,
+						},
 					});
 					setStatus("");
 				} catch (err) {
@@ -178,6 +248,47 @@
 					setStatus(`Failed to launch: ${err.message || err}`);
 				}
 			}
+
+			const SCALE_STEP = 0.1;
+			const SCALE_MIN = 0.5;
+			const SCALE_MAX = 2;
+			let scale = 1;
+			const scaleLabel = document.getElementById("scale-label");
+
+			function applyScale() {
+				document.documentElement.style.setProperty("--emu-scale", scale);
+				scaleLabel.textContent = `${Math.round(scale * 100)}%`;
+			}
+
+			document.getElementById("scale-down-btn").addEventListener("click", () => {
+				scale = Math.max(SCALE_MIN, +(scale - SCALE_STEP).toFixed(2));
+				applyScale();
+			});
+
+			document.getElementById("scale-up-btn").addEventListener("click", () => {
+				scale = Math.min(SCALE_MAX, +(scale + SCALE_STEP).toFixed(2));
+				applyScale();
+			});
+
+			const fullscreenBtn = document.getElementById("fullscreen-btn");
+			fullscreenBtn.addEventListener("click", () => {
+				if (document.fullscreenElement) {
+					document.exitFullscreen();
+					return;
+				}
+				const liveCanvas = current?.getCanvas();
+				if (!liveCanvas) {
+					setStatus("Launch a game first.");
+					return;
+				}
+				liveCanvas.requestFullscreen().catch((err) => {
+					setStatus(`Couldn't enter fullscreen: ${err.message || err}`);
+				});
+			});
+
+			document.addEventListener("fullscreenchange", () => {
+				fullscreenBtn.textContent = document.fullscreenElement ? "Exit Fullscreen" : "Fullscreen";
+			});
 
 			document.getElementById("stop-btn").addEventListener("click", async () => {
 				if (current) {
